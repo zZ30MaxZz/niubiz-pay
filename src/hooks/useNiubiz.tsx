@@ -13,8 +13,6 @@ import Loader from "../components/Loader/Loader";
 
 const useNiubiz = (
   userEmail: string,
-  credentialEncoded: string,
-  merchandId: string,
   purchasenumber: number,
   baseUrl: string,
   tokenService: string,
@@ -24,7 +22,12 @@ const useNiubiz = (
   srcCustomCss: string,
   MDD: MerchantDefineData,
   channelSession: string,
-  channelToken: string
+  channelToken: string,
+  amount: string,
+  credentialEncoded?: string | null,
+  merchandId?: string | null,
+  token?: string | null,
+  sessionKey?: string | null
 ): UseNiubizReturn => {
   const [showForm, setShowForm] = useState<boolean>(false);
   const [showLoader, setShowLoader] = useState<boolean>(false);
@@ -74,13 +77,20 @@ const useNiubiz = (
       return;
     }
 
+    if (token && token !== '') {
+      setShowLoader(false);
+      setShowForm(true);
+    }
+
     const handleGetTokenSecurity = async () => {
+      if ((token && token !== '') || !credentialEncoded) return;
+
       const url = `${baseUrl}${tokenService}`;
 
       const response = await GetNiubizToken(url, credentialEncoded);
 
       setTokenSecurity(response.tokenSecurity);
-      
+
     };
 
     handleGetTokenSecurity();
@@ -90,10 +100,12 @@ const useNiubiz = (
   useEffect(() => {
     if (tokenSecurity) {
       const handleGetTokenSession = async () => {
+        if (sessionKey && sessionKey !== '') return;
+
         const url = `${baseUrl}${sessionService}/${merchandId}`;
 
         let requestParams: SessionRequest = {
-          amount: 1,
+          amount: amount,
           antifraud: {
             merchantDefineData: memoizedMDD,
           },
@@ -112,7 +124,7 @@ const useNiubiz = (
   }, [tokenSecurity, baseUrl, sessionService, merchandId, memoizedMDD, channelSession]);
 
   useEffect(() => {
-    if (tokenSession) {
+    if (tokenSession && tokenSecurity) {
       setShowForm(true);
     }
   }, [tokenSession, tokenSecurity]);
@@ -127,19 +139,22 @@ const useNiubiz = (
   const FormComponent =
     showLoader ?
       <Loader color="#fff" size={40} /> :
-      <CustomForm
-        showForm={showForm}
-        srcCss={srcCustomCss}
-        tokenSession={tokenSession?.sessionKey}
-        merchandId={merchandId}
-        purchasenumber={purchasenumber}
-        onClose={handleOnClose}
-        userEmail={userEmail}
-        channelToken={channelToken}
-        tokenizerService={tokenizerService}
-        tokenSecurity={tokenSecurity}
-        baseUrl={baseUrl}
-      />;
+      showForm ?
+        <CustomForm
+          showForm={showForm}
+          srcCss={srcCustomCss}
+          tokenSession={sessionKey ?? tokenSession?.sessionKey}
+          merchandId={merchandId ?? ""}
+          purchasenumber={purchasenumber}
+          onClose={handleOnClose}
+          userEmail={userEmail}
+          channelToken={channelToken}
+          tokenizerService={tokenizerService}
+          tokenSecurity={token ?? tokenSecurity}
+          amount={amount}
+          baseUrl={baseUrl}
+        /> :
+        <></>;
 
   const loadCustomTag = async () => {
     console.log('Librerias listas para usar');
