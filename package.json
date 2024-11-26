@@ -1,6 +1,6 @@
 {
   "name": "niubiz-pay",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Use Niubiz",
   "main": "index.js",
   "module": "dist/index.mjs",
@@ -29,7 +29,7 @@
     "pay",
     "decoupled"
   ],
-  "repository": {	
+  "repository": {
     "type": "git",
     "url": "https://github.com/zZ30MaxZz/niubiz-pay"
   },
