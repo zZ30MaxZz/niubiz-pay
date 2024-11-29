@@ -18,8 +18,6 @@ npm i niubiz-pay@latest
         MDD77: '0',
     }), []);
 
-    const { NotificationComponent, triggerNotification } = useNotification("bottom-left");
-
      const { FormComponent, triggerOpenForm } = useNiubiz(
         "userniubiz@mail.com",
         Math.floor(Math.random() * 120000) + 1,
@@ -44,7 +42,6 @@ npm i niubiz-pay@latest
 
 ```html
     <div>
-        {NotificationComponent}
         {FormComponent}
     </div>
 ```
