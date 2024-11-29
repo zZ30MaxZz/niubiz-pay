@@ -33,6 +33,8 @@ export default [
             typescript({ tsconfig: "./tsconfig.json" }),
             terser(),
             postcss({
+                extract: true,
+                modules: true,
                 use: [
                     ['sass', { includePaths: ['./src/styles'] }]
                 ],
@@ -44,6 +46,6 @@ export default [
         input: "src/index.ts",
         output: [{ file: packageJson.types }],
         plugins: [dts.default()],
-        external: [/\.css$/],
+        external: [/\.css$/, /\.scss$/, "react", "react-dom"],
     },
 ];
