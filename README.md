@@ -11,6 +11,8 @@ npm i niubiz-pay@latest
 ## Usage
 
 ```typescript
+    import useNiubiz from 'niubiz-pay';
+
     const MDD: MerchantDefineData = useMemo(() => ({
         MDD4: 'mail@mail.com',
         MDD32: '12345789',
@@ -43,5 +45,6 @@ npm i niubiz-pay@latest
 ```html
     <div>
         {FormComponent}
+        <button onClick={triggerOpenForm}>Open Form</button>
     </div>
 ```

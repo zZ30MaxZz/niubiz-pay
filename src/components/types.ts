@@ -12,7 +12,6 @@ export interface UseNiubizReturn {
   triggerOpenForm: () => void;
 }
 
-
 export interface SessionRequest {
   amount: string
   antifraud: Antifraud
@@ -35,8 +34,6 @@ export interface TokenizerResponse {
   transactionToken: string
   channel: string
 }
-
-//
 
 export interface ErrorResponse {
   errorCode: number
