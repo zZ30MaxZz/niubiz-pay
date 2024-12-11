@@ -46,9 +46,7 @@ interface Window {
                 email: string,
                 alias: string,
                 userBlockId: string,
-                currencyConversion: boolean,
-                amount: string
-
+                currencyConversion: boolean
             }) => Promise<any>
     }
 }
