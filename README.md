@@ -11,7 +11,7 @@ npm i niubiz-pay@latest
 ## Usage
 
 ```typescript
-    import useNiubiz from 'niubiz-pay';
+    import { useNiubiz } from 'niubiz-pay';
 
     const MDD: MerchantDefineData = useMemo(() => ({
         MDD4: 'mail@mail.com',
@@ -22,7 +22,7 @@ npm i niubiz-pay@latest
 
      const { FormComponent, triggerOpenForm } = useNiubiz(
         "userniubiz@mail.com",
-        Math.floor(Math.random() * 120000) + 1,
+        Math.floor(Math.random() * 120000) + 1, // Transaction number
         "https://apisandbox.vnforappstest.com",
         "/api.security/v1/security",
         "/api.ecommerce/v2/ecommerce/token/session",
@@ -30,8 +30,8 @@ npm i niubiz-pay@latest
         "https://pocpaymentserve.s3.amazonaws.com/payform.min.js",
         "https://pocpaymentserve.s3.amazonaws.com/payform.min.css",
         MDD,
-        "web",
-        "web",
+        "payform",
+        "payform",
         amount,
         "Z2lhbmNhZ2FsbGFyZG9AZ21haWwuY29tOkF2MyR0cnV6",
         merchantId ?? "110777209",
@@ -46,5 +46,53 @@ npm i niubiz-pay@latest
     <div>
         {FormComponent}
         <button onClick={triggerOpenForm}>Open Form</button>
+    </div>
+```
+## Payment
+```typescript
+    import { useNiubizPay } from 'niubiz-pay';
+
+    const MDD: MerchantDefineData = useMemo(() => ({
+        MDD4: 'mail@mail.com',
+        MDD32: '12345789',
+        MDD75: 'Registrado',
+        MDD77: '0',
+    }), []);
+
+    const { FormComponent, triggerOpenForm, triggerSendForm, formResponse, triggerResetForm } = useNiubizPay(
+        "userniubiz@mail.com",
+        "0", // 0 – DNI; 1 – Carnet de extranjería; 2 – Pasaporte
+        "44554444", // Document
+        Math.floor(Math.random() * 120000) + 1, // Transaction number
+        "https://apisandbox.vnforappstest.com",
+        "/api.security/v1/security",
+        "/api.ecommerce/v2/ecommerce/token/session",
+        "/api.authorization/v3/authorization/ecommerce",
+        "https://pocpaymentserve.s3.amazonaws.com/payform.min.js",
+        "https://pocpaymentserve.s3.amazonaws.com/payform.min.css",
+        MDD,
+        "web",
+        "web",
+        amount,
+        "Z2lhbmNhZ2FsbGFyZG9AZ21haWwuY29tOkF2MyR0cnV6",
+        merchantId ?? "110777209",
+        token,
+        sessionKey
+    );
+
+    useEffect(() => {
+        console.log('Response niubiz payment 😁', formResponse);
+
+    }, [formResponse])
+```
+
+### Component 
+
+```html
+    <div>
+        <button onClick={triggerOpenForm}>Open Form</button>
+        <button onClick={triggerResetForm}>Reset Form</button>
+        <button onClick={triggerSendForm}>Send Form</button>
+        {FormComponent}
     </div>
 ```
