@@ -11,6 +11,7 @@ import { useFormik } from "formik";
 import Loader from '../Loader/Loader';
 
 type CustomProps = {
+    setFormResponse: any;
     showForm: boolean;
     srcCss: string;
     tokenSession?: string;
@@ -26,6 +27,7 @@ type CustomProps = {
 };
 
 const CustomForm: React.FC<CustomProps> = ({
+    setFormResponse,
     showForm,
     srcCss,
     tokenSession,
@@ -54,7 +56,6 @@ const CustomForm: React.FC<CustomProps> = ({
 
 
     const [tokenizer, setTokenizer] = useState<TokenizerResponse | null>();
-    const [errorTokenizer, setErrorTokenizer] = useState<ErrorResponse | null>()
 
     let cardNumber: Promise<any>;
     let cardExpiry: Promise<any>;
@@ -107,9 +108,6 @@ const CustomForm: React.FC<CustomProps> = ({
         validateOnChange: true,
         validateOnBlur: false,
         onSubmit: async (values) => {
-            console.log(values);
-            console.log('Formulario enviado');
-
             setShowLoader(true);
 
             var dataForm = {
@@ -129,19 +127,22 @@ const CustomForm: React.FC<CustomProps> = ({
                 dataForm
             )
                 .then(function (data) {
-                    console.log('DATA:', data);
-
                     setTokenizer(data as TokenizerResponse);
 
                     setShowLoader(false);
-                    onClose();
+                    // onClose();
                 })
                 .catch(function (error) {
-                    console.dir(error)
-                    setErrorTokenizer(error as ErrorResponse);
-
                     setShowLoader(false);
-                    onClose();
+
+                    const dataResponse = {
+                        success: false,
+                        code: "001",
+                        data: error
+                    }
+
+                    setFormResponse(dataResponse);
+                    // onClose();
                 });
 
             // onClose();
@@ -218,7 +219,6 @@ const CustomForm: React.FC<CustomProps> = ({
 
         cardNumber.then(element => {
             element.on('bin', function (data: any) {
-                console.log(data);
                 let numberCard = getCardType(data);
 
                 if (numberCard)
@@ -227,8 +227,6 @@ const CustomForm: React.FC<CustomProps> = ({
             element.on('change', function (data: any) {
                 if (data.length > 0 && data[0].code === "invalid_number") {
                     formik.setFieldError('cardNumber', data[0].message);
-
-                    // setBrand(FinancialInstitution.NotFound.name);   
                 }
             });
             element.on('dcc', function (data: any) {
@@ -324,9 +322,15 @@ const CustomForm: React.FC<CustomProps> = ({
                 const url = `${baseUrl}${tokenizerService}/${merchandId}/${tokenizer.transactionToken}`;
                 const response = await GetNiubizTokenizerCard(url, tokenSecurity);
 
-                if (response) {
-                    console.log(response)
+                const dataResponse = {
+                    success: response.success,
+                    code: "000",
+                    data: response.data
                 }
+
+                setFormResponse(dataResponse);
+
+                onClose();
             }
         };
 

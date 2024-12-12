@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
 import {
+  DataResponse,
   MerchantDefineData,
   SessionRequest,
   TokenSessionReturn,
@@ -37,6 +38,11 @@ const useNiubiz = (
   const [tokenSession, setTokenSession] = useState<TokenSessionReturn | null>();
 
   const memoizedMDD = useMemo(() => MDD, [MDD]);
+  const [formResponse, setFormResponse] = useState<DataResponse>({
+    success: false,
+    code: "000",
+    data: null
+  });
 
   const loadScript = (src: string) => {
     return new Promise<void>((resolve, reject) => {
@@ -48,14 +54,6 @@ const useNiubiz = (
     });
   };
 
-  const unloadScript = useCallback(() => {
-    const scriptExists = document.querySelector(`script[src="${srcCustomScript}"]`);
-    if (scriptExists) {
-      // document.body.removeChild(scriptExists);
-    }
-    setScriptsLoaded(false);
-  }, [srcCustomScript]);
-
   const triggerOpenForm = useCallback(() => {
     setShowLoader(true);
     const loadResources = async () => {
@@ -65,7 +63,13 @@ const useNiubiz = (
 
         loadCustomTag();
       } catch (error) {
-        console.error(error);
+        const dataResponse = {
+          success: false,
+          code: "001",
+          data: error
+        }
+
+        setFormResponse(dataResponse);
       }
     };
 
@@ -89,8 +93,12 @@ const useNiubiz = (
 
       const response = await GetNiubizToken(url, credentialEncoded);
 
-      setTokenSecurity(response.tokenSecurity);
-
+      if (response.success) {
+        setTokenSecurity(response.data);
+      }
+      else {
+        setFormResponse(response);
+      }
     };
 
     handleGetTokenSecurity();
@@ -114,7 +122,12 @@ const useNiubiz = (
 
         const response = await GetNiubizTokenSession(url, tokenSecurity, requestParams);
 
-        setTokenSession(response);
+        if (response.success) {
+          setTokenSession(response.data);
+        }
+        else {
+          setFormResponse(response);
+        }
 
         setShowLoader(false);
       };
@@ -131,7 +144,7 @@ const useNiubiz = (
 
   const handleOnClose = () => {
     setShowForm(false);
-    unloadScript();
+    setScriptsLoaded(false);
     setTokenSession(null);
     setTokenSecurity(null);
   };
@@ -141,6 +154,7 @@ const useNiubiz = (
       <Loader color="#fff" size={40} /> :
       showForm ?
         <CustomForm
+          setFormResponse={setFormResponse}
           showForm={showForm}
           srcCss={srcCustomCss}
           tokenSession={sessionKey ?? tokenSession?.sessionKey}
@@ -160,7 +174,7 @@ const useNiubiz = (
     console.log('Librerias listas para usar');
   };
 
-  return { FormComponent, triggerOpenForm };
+  return { FormComponent, triggerOpenForm, formResponse };
 };
 
 export default useNiubiz;

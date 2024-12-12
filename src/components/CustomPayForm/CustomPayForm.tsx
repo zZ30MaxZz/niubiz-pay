@@ -1,10 +1,8 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import styles from "./customPayForm.module.scss";
 import { X } from "@phosphor-icons/react";
-import Card from '../Card/Card';
 import InputGroup from '../InputGroup/InputGroup';
 import { ErrorResponse, TokenizerResponse } from '../types';
-import GetNiubizTokenizerCard from '../../helper/GetNiubizTokenizerCard';
 import { FinancialInstitution, getCardType } from '../../helper/card';
 import * as Yup from 'yup';
 import { useFormik } from "formik";
@@ -339,7 +337,13 @@ const CustomPayForm = forwardRef(({
                 const response = await PostNiubizAuthorize(url, tokenSecurity, data);
 
                 if (response) {
-                    setFormResponse(response);
+                    const dataResponse = {
+                        success: response.success,
+                        code: "000",
+                        data: response.data
+                    }
+
+                    setFormResponse(dataResponse);
                 }
             }
         };
