@@ -6,10 +6,8 @@ import {
   TokenSessionReturn,
   UseNiubizPayReturn,
 } from "../components/types";
-import CustomForm from "../components/CustomForm/CustomForm";
 import GetNiubizToken from "../helper/GetNiubizToken";
 import GetNiubizTokenSession from "../helper/GetNiubizTokenSession";
-import Loader from "../components/Loader/Loader";
 import CustomPayForm from "../components/CustomPayForm/CustomPayForm";
 
 
@@ -97,6 +95,9 @@ const useNiubizPay = (
       }
       else {
         setFormResponse(response);
+
+        setShowLoader(false);
+        setShowForm(false);
       }
     };
 
@@ -126,6 +127,9 @@ const useNiubizPay = (
         }
         else {
           setFormResponse(response);
+
+          setShowLoader(false);
+          setShowForm(false);
         }
 
         setShowLoader(false);
