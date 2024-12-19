@@ -20,7 +20,7 @@ npm i niubiz-pay@latest
         MDD77: '0',
     }), []);
 
-     const { FormComponent, triggerOpenForm } = useNiubiz(
+     const { FormComponent, triggerOpenForm, formResponse } = useNiubiz(
         "userniubiz@mail.com",
         Math.floor(Math.random() * 120000) + 1, // Transaction number
         "https://apisandbox.vnforappstest.com",
@@ -36,8 +36,14 @@ npm i niubiz-pay@latest
         "Z2lhbmNhZ2FsbGFyZG9AZ21haWwuY29tOkF2MyR0cnV6",
         merchantId ?? "110777209",
         token,
-        sessionKey
+        sessionKey,
+        <CustomLoader> //Optional
     );
+
+    useEffect(() => {
+        console.log('Respuesta del formulario Tokenizer 😁', formResponse);
+
+    }, [formResponse]);
 ```
 
 ### Component 
@@ -77,13 +83,14 @@ npm i niubiz-pay@latest
         "Z2lhbmNhZ2FsbGFyZG9AZ21haWwuY29tOkF2MyR0cnV6",
         merchantId ?? "110777209",
         token,
-        sessionKey
+        sessionKey,
+        <CustomLoader> //Optional
     );
 
     useEffect(() => {
         console.log('Response niubiz payment 😁', formResponse);
 
-    }, [formResponse])
+    }, [formResponse]);
 ```
 
 ### Component 
