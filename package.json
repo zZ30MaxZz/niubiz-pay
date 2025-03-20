@@ -1,6 +1,6 @@
 {
   "name": "niubiz-pay",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "Library that allows you to make payments and tokenize debit and credit cards with Niubiz.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
